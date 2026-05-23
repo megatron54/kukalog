@@ -1,0 +1,656 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+
+\geometry{margin=2.5cm, top=3cm, bottom=3cm}
+
+% Colors
+\definecolor{fordblue}{HTML}{003478}
+\definecolor{kukaorange}{HTML}{FF6600}
+\definecolor{darkgray}{HTML}{1e293b}
+\definecolor{lightgray}{HTML}{f1f5f9}
+\definecolor{codebg}{HTML}{f8fafc}
+
+% Hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=fordblue,
+    urlcolor=kukaorange,
+    citecolor=fordblue,
+}
+
+% Headers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{darkgray}Ford Motor Company}
+\fancyhead[R]{\small\color{darkgray}KukaLog Platform}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section styling
+\titleformat{\section}{\Large\bfseries\color{fordblue}}{}{0em}{}
+\titleformat{\subsection}{\large\bfseries\color{darkgray}}{}{0em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{darkgray}}{}{0em}{}
+
+% Code listings
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{codebg},
+    frame=single,
+    framerule=0.5pt,
+    rulecolor=\color{lightgray},
+    breaklines=true,
+    showstringspaces=false,
+}
+
+% Custom box
+\newtcolorbox{infobox}[1][]{
+    colback=blue!5,
+    colframe=fordblue,
+    fonttitle=\bfseries,
+    title=#1,
+}
+
+\newtcolorbox{warnbox}[1][]{
+    colback=orange!5,
+    colframe=kukaorange,
+    fonttitle=\bfseries,
+    title=#1,
+}
+
+\begin{document}
+
+% ============================================================
+% TITLE PAGE
+% ============================================================
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Huge\bfseries\color{fordblue} KukaLog}\\[0.5cm]
+{\Large Plataforma de Gestión de Incidencias Técnicas}\\[0.3cm]
+{\large Robots KUKA KRC2}\\[2cm]
+
+{\large Ford Motor Company}\\
+{\large Body Construction $\cdot$ Planta de Valencia}\\[2cm]
+
+{\normalsize Documento generado: \today}\\[4cm]
+
+\begin{tabular}{ll}
+\textbf{Autor:} & Miguel Serra Ferrando \\
+\textbf{Departamento:} & Body Construction Engineering \\
+\textbf{Tutor:} & Javi Llopis \\
+\end{tabular}
+
+\vfill
+{\small\color{darkgray} Documento interno --- Uso restringido}
+\end{titlepage}
+
+% ============================================================
+% TABLE OF CONTENTS
+% ============================================================
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% PART I - EXECUTIVE PITCH
+% ============================================================
+
+\part*{Parte I --- Executive Pitch}
+\addcontentsline{toc}{section}{Parte I --- Executive Pitch}
+
+\section{El Problema}
+
+En la planta de Ford Valencia, los ingenieros y operarios de Body Construction gestionan las incidencias técnicas de robots KUKA KRC2 mediante un \textbf{chat informal de Microsoft Teams}.
+
+Cuando ocurre un fallo en un robot, el operario escribe en el chat:
+\begin{itemize}[noitemsep]
+    \item Qué ha ocurrido
+    \item Qué robot ha fallado
+    \item Qué código de error apareció
+    \item Cómo se solucionó
+    \item Imágenes o notas adicionales
+\end{itemize}
+
+\subsection{Problemas del sistema actual}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Problema} & \textbf{Impacto} \\
+\midrule
+Información desordenada & Imposibilidad de encontrar soluciones previas \\
+Sin estructura & No se puede filtrar por robot, error, fecha, línea \\
+Búsquedas ineficaces & Un ingeniero puede tardar 30--60 min en encontrar un caso similar \\
+Soluciones repetidas & El mismo problema se resuelve de cero múltiples veces \\
+Información que se pierde & Mensajes antiguos quedan enterrados en el historial \\
+Sin trazabilidad & No hay métricas, no se sabe qué robots fallan más \\
+Sin transferencia de conocimiento & Cuando un técnico se va, su experiencia se pierde \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Datos clave}
+
+Basándose en el histórico del chat de Teams, se han identificado:
+\begin{itemize}[noitemsep]
+    \item Más de \textbf{40 tipos de incidencias} recurrentes documentadas
+    \item Fallos repetitivos como \textit{Green Goo}, fallos KSD, KPS, SSD, ventiladores
+    \item Robots con historial extenso de intervenciones (ej: robots de líneas 6X, 6Y, 8XY)
+    \item Procedimientos críticos no documentados formalmente (UDMA BIOS, \$RebootDSE, restauración SSD)
+\end{itemize}
+
+\section{La Solución: KukaLog}
+
+\textbf{KukaLog} es una plataforma web interna diseñada para reemplazar el sistema informal de chat por una herramienta estructurada, rápida y profesional.
+
+\subsection{Capacidades principales}
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{Registro estructurado} --- Formulario profesional para documentar incidencias con todos los campos técnicos necesarios
+    \item \textbf{Búsqueda inteligente} --- Búsqueda full-text con filtros avanzados por robot, error, categoría, línea, fecha, prioridad
+    \item \textbf{Consulta de histórico} --- Acceso inmediato a soluciones previas de problemas similares
+    \item \textbf{Dashboard analítico} --- Métricas de planta: errores frecuentes, robots problemáticos, tiempos de parada
+    \item \textbf{Trazabilidad} --- Historial completo de cada robot con todas sus incidencias
+\end{enumerate}
+
+\section{Propuesta de Valor}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Métrica} & \textbf{Antes (Chat Teams)} & \textbf{Con KukaLog} \\
+\midrule
+Buscar solución previa & 30--60 minutos & 5--30 segundos \\
+Documentar incidencia & Texto libre desordenado & Formulario estructurado \\
+Transferencia entre turnos & Verbal / mensajes perdidos & Registro persistente consultable \\
+Métricas de planta & Inexistentes & Dashboard en tiempo real \\
+Trazabilidad por robot & Manual & Automática \\
+Búsqueda por código error & Scroll infinito en chat & Un clic con filtro \\
+Onboarding técnicos nuevos & Semanas de experiencia & Acceso inmediato al histórico \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Roadmap}
+
+\begin{warnbox}[Visión estratégica en 3 fases]
+\begin{enumerate}
+    \item \textbf{Fase 1 --- MVP (completado)} \\
+    Aplicación web funcional con registro, búsqueda, filtros y dashboard. Desplegable con Docker.
+
+    \item \textbf{Fase 2 --- Multi-usuario corporativo} \\
+    Autenticación SSO (Azure AD), PostgreSQL, despliegue en Cloud Run, roles y permisos.
+
+    \item \textbf{Fase 3 --- Integración con IA (Kratos/Orion)} \\
+    El agente Kratos consulta el histórico de KukaLog para sugerir soluciones. Registro de incidencias por lenguaje natural vía Teams.
+\end{enumerate}
+\end{warnbox}
+
+\section{Coste e Infraestructura}
+
+\begin{infobox}[Inversión mínima]
+\begin{itemize}[noitemsep]
+    \item \textbf{Hardware adicional:} Ninguno (se despliega en infraestructura GCP existente)
+    \item \textbf{Licencias:} Ninguna (stack 100\% open source)
+    \item \textbf{Cloud Run:} Coste estimado < 20€/mes para uso interno
+    \item \textbf{Base de datos:} Cloud SQL PostgreSQL --- < 15€/mes
+    \item \textbf{Tiempo de desarrollo Fase 2:} 2--3 semanas
+    \item \textbf{Tiempo de desarrollo Fase 3:} 1--2 semanas (infraestructura Orion ya existente)
+\end{itemize}
+\end{infobox}
+
+\section{Usuarios Objetivo}
+
+\begin{itemize}[noitemsep]
+    \item Técnicos de mantenimiento de robots
+    \item Ingenieros de manufactura
+    \item Ingenieros de programación de robots
+    \item Jefes de turno
+    \item Ingenieros de proyecto
+\end{itemize}
+
+\newpage
+
+% ============================================================
+% PART II - TECHNICAL DOCUMENTATION
+% ============================================================
+
+\part*{Parte II --- Documentación Técnica}
+\addcontentsline{toc}{section}{Parte II --- Documentación Técnica}
+
+\section{Arquitectura del Sistema}
+
+\begin{lstlisting}
++---------------------------------------------------+
+|                    USUARIO                         |
+|              (Navegador web interno)               |
++---------------------------------------------------+
+          |                            |
+          v                            v
++-------------------+    +------------------------+
+|    FRONTEND       |    |       BACKEND          |
+|    Next.js 16     |    |       FastAPI          |
+|    React + TS     |    |       Python 3.12      |
+|    TailwindCSS    |    |       SQLAlchemy       |
+|    Recharts       |    |       Pydantic         |
+|    Port 3000      |    |       Port 8002        |
++-------------------+    +------------------------+
+                                    |
+                                    v
+                         +-------------------+
+                         |    BASE DE DATOS  |
+                         |    SQLite (MVP)   |
+                         |    PostgreSQL (v2)|
+                         +-------------------+
+\end{lstlisting}
+
+\subsection{Flujo de datos}
+
+\begin{enumerate}[noitemsep]
+    \item El usuario accede al frontend vía navegador
+    \item El frontend hace peticiones REST al backend (FastAPI)
+    \item El backend ejecuta queries contra la base de datos
+    \item Los resultados se devuelven en JSON al frontend
+    \item El frontend renderiza la interfaz con los datos
+\end{enumerate}
+
+\section{Stack Tecnológico}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Componente} & \textbf{Tecnología} \\
+\midrule
+Backend & Python 3.12 + FastAPI + Uvicorn \\
+Frontend & Next.js 16 + React 19 + TypeScript \\
+Estilos & TailwindCSS v4 \\
+Gráficas & Recharts \\
+Iconos & Lucide React \\
+Base de datos (MVP) & SQLite \\
+Base de datos (producción) & PostgreSQL \\
+Contenedorización & Docker + Docker Compose \\
+Cloud & Google Cloud Platform (Cloud Run) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Modelo de Datos}
+
+\begin{lstlisting}[language=SQL]
+CREATE TABLE incidents (
+    id              INTEGER PRIMARY KEY,
+    created_at      DATETIME,
+    updated_at      DATETIME,
+    -- Informacion General
+    operator        TEXT,
+    engineer        TEXT,
+    shift           TEXT,        -- manana/tarde/noche
+    -- Maquina
+    robot_type      TEXT,        -- ej: "6Y 110R1"
+    controller      TEXT,        -- KRC2
+    cell            TEXT,        -- ej: "Celda-6Y-110"
+    line            TEXT,        -- ej: "Linea 6Y"
+    -- Incidencia
+    error_code      TEXT,        -- ej: "KCP_BLACK", "KSD_NOK"
+    category        TEXT,        -- pantalla/hardware/comunicacion...
+    priority        TEXT,        -- critica/alta/media/baja
+    status          TEXT,        -- abierta/en_progreso/cerrada
+    title           TEXT,
+    description     TEXT,
+    symptoms        TEXT,
+    -- Solucion
+    solution        TEXT,
+    steps           TEXT,
+    downtime_min    INTEGER,
+    result          TEXT,        -- resuelto/parcial/pendiente
+    -- Extra
+    notes           TEXT,
+    images          TEXT         -- JSON array de URLs
+);
+\end{lstlisting}
+
+\subsection{Categorías de incidencia}
+
+\begin{multicols}{2}
+\begin{itemize}[noitemsep]
+    \item \texttt{pantalla} --- KCP en negro, congelada
+    \item \texttt{hardware} --- PC NOK, condensadores
+    \item \texttt{seguridades} --- ESC-CI, modo operación
+    \item \texttt{comunicación} --- ServoBus, watchdog, IBS
+    \item \texttt{accionamiento} --- KSD, ejes sin tensión
+    \item \texttt{desincronismo} --- Pérdida ejes, baterías
+    \item \texttt{ventilación} --- Turbinas, ventiladores
+    \item \texttt{alimentación} --- KPS, fuentes
+    \item \texttt{software} --- SSD, KUKACROSS, DCP
+    \item \texttt{eléctrica} --- Conectores, cableado
+\end{itemize}
+\end{multicols}
+
+\section{API Reference}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+GET & \texttt{/api/stats} & Métricas para dashboard \\
+GET & \texttt{/api/incidents} & Lista con filtros (query params) \\
+GET & \texttt{/api/incidents/\{id\}} & Detalle de incidencia \\
+POST & \texttt{/api/incidents} & Crear nueva incidencia \\
+PUT & \texttt{/api/incidents/\{id\}} & Editar incidencia \\
+POST & \texttt{/api/seed} & Generar datos de prueba \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Filtros disponibles (query params)}
+
+\begin{multicols}{3}
+\begin{itemize}[noitemsep]
+    \item \texttt{search} (full-text)
+    \item \texttt{status}
+    \item \texttt{priority}
+    \item \texttt{category}
+    \item \texttt{controller}
+    \item \texttt{line}
+    \item \texttt{robot\_type}
+    \item \texttt{error\_code}
+    \item \texttt{operator}
+    \item \texttt{engineer}
+    \item \texttt{cell}
+    \item \texttt{skip} / \texttt{limit}
+\end{itemize}
+\end{multicols}
+
+\subsection{Ejemplo de petición}
+
+\begin{lstlisting}
+GET /api/incidents?search=Green+Goo&category=hardware&status=cerrada
+\end{lstlisting}
+
+\subsection{Ejemplo de respuesta (stats)}
+
+\begin{lstlisting}[language=json]
+{
+    "total": 43,
+    "open": 9,
+    "closed": 26,
+    "in_progress": 8,
+    "avg_downtime": 112.3,
+    "top_errors": [
+        {"error_code": "KCP_BLACK", "count": 7},
+        {"error_code": "KSD_NOK", "count": 5}
+    ],
+    "top_robots": [...],
+    "by_category": [...],
+    "by_week": [...],
+    "recent": [...]
+}
+\end{lstlisting}
+
+\section{Frontend --- Páginas}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Ruta} & \textbf{Funcionalidad} \\
+\midrule
+\texttt{/} & Dashboard con KPIs, gráficas, tabla de recientes \\
+\texttt{/incidents} & Lista completa con búsqueda y filtros avanzados \\
+\texttt{/incidents/[id]} & Detalle completo de una incidencia \\
+\texttt{/incidents/new} & Formulario de registro de nueva incidencia \\
+\texttt{/search} & Buscador dedicado con sugerencias rápidas \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Diseño visual}
+
+\begin{itemize}[noitemsep]
+    \item Paleta: azul corporativo Ford (\texttt{\#003478}) + naranja KUKA (\texttt{\#FF6600})
+    \item Tipografía: Inter (system font)
+    \item Sidebar fija con navegación
+    \item Cards con bordes y sombras sutiles
+    \item Diseño industrial-corporativo premium
+\end{itemize}
+
+\section{Deployment}
+
+\subsection{Docker Compose (local / desarrollo)}
+
+\begin{lstlisting}[language=yaml]
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8002:8002"
+  frontend:
+    build: ./frontend
+    ports:
+      - "3080:3000"
+    depends_on:
+      - backend
+\end{lstlisting}
+
+\subsection{Comandos}
+
+\begin{lstlisting}[language=bash]
+# Levantar todo
+docker compose up -d
+
+# Ver logs
+docker compose logs -f
+
+# Parar
+docker compose down
+\end{lstlisting}
+
+\subsection{Cloud Run (producción)}
+
+\begin{lstlisting}[language=bash]
+# Build y push
+docker build -t us-central1-docker.pkg.dev/PROJECT/kukalog/backend .
+docker push us-central1-docker.pkg.dev/PROJECT/kukalog/backend
+
+# Deploy
+gcloud run deploy kukalog-backend \
+    --image us-central1-docker.pkg.dev/PROJECT/kukalog/backend \
+    --port 8002 --allow-unauthenticated
+\end{lstlisting}
+
+\newpage
+
+% ============================================================
+% PART III - FUTURE IMPLEMENTATIONS
+% ============================================================
+
+\part*{Parte III --- Implementaciones Futuras}
+\addcontentsline{toc}{section}{Parte III --- Implementaciones Futuras}
+
+\section{Fase 2: Multi-usuario Corporativo}
+
+\subsection{Autenticación SSO (Azure AD)}
+
+Ford utiliza Microsoft Entra ID (Azure AD) para la gestión de identidades. La integración:
+
+\begin{lstlisting}[language=python]
+# Backend: middleware de autenticacion
+from fastapi_azure_auth import SingleTenantAzureAuthorizationCodeBearer
+
+azure_scheme = SingleTenantAzureAuthorizationCodeBearer(
+    app_client_id=AZURE_CLIENT_ID,
+    tenant_id=FORD_TENANT_ID,
+)
+
+@app.get("/api/incidents")
+async def list_incidents(user=Depends(azure_scheme)):
+    # user.name, user.roles disponibles
+    ...
+\end{lstlisting}
+
+\textbf{Roles propuestos:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Operario} --- puede crear incidencias y consultar
+    \item \textbf{Ingeniero} --- puede crear, editar, cerrar incidencias
+    \item \textbf{Admin} --- gestión completa + dashboard analytics
+\end{itemize}
+
+\subsection{Migración a PostgreSQL}
+
+\begin{lstlisting}[language=python]
+# Solo cambia la connection string
+DATABASE_URL = "postgresql://user:pass@host:5432/kukalog"
+# SQLAlchemy abstrae el resto - zero cambios en queries
+\end{lstlisting}
+
+Cloud SQL PostgreSQL en GCP: alta disponibilidad, backups automáticos, escalado vertical.
+
+\subsection{Upload de archivos multimedia}
+
+\begin{itemize}[noitemsep]
+    \item Fotos de la incidencia (conector dañado, Green Goo visible, pantalla de error)
+    \item Vídeos cortos de síntomas
+    \item PDFs técnicos adjuntos
+    \item Almacenamiento en Google Cloud Storage (GCS)
+    \item Referencia en campo \texttt{images} como JSON array de URLs firmadas
+\end{itemize}
+
+\section{Fase 3: Integración con Agentes IA}
+
+\subsection{Kratos consulta KukaLog}
+
+Actualmente, Kratos (agente experto en robots KUKA dentro de la plataforma Orion) utiliza una knowledge base estática de 420 líneas. Con la integración:
+
+\begin{lstlisting}[language=python]
+# Nueva tool para el agente Kratos
+async def search_kukalog(query: str, filters: dict) -> list:
+    """Busca en el historico real de incidencias."""
+    response = await httpx.get(
+        "http://kukalog-backend/api/incidents",
+        params={"search": query, **filters}
+    )
+    return response.json()
+\end{lstlisting}
+
+\textbf{Ejemplo de uso:}
+
+\begin{infobox}[Conversación con Kratos vía Teams]
+\textbf{Ingeniero:} ``El robot 6Y 110R4 tiene la KCP en negro, ¿qué hago?''
+
+\textbf{Kratos:} ``Basándome en 4 incidencias previas de KCP en negro en robots 6Y:
+\begin{enumerate}[noitemsep]
+    \item Causa más frecuente: Green Goo en conectores KPS (3/4 casos)
+    \item Verificar salvapantallas KUKA y Windows
+    \item Si persiste: comprobar estado de PC (condensadores hinchados)
+    \item Solución definitiva si recurrente: cambio de armario completo
+\end{enumerate}
+[Fuentes: Incidencia \#7, \#12, \#28, \#34 en KukaLog]''
+\end{infobox}
+
+\subsection{Registro automático desde lenguaje natural}
+
+\begin{lstlisting}
+Operario (via Teams): "El 8XY 170R3 se ha quedado con la
+maleta en negro otra vez, tenia green goo en los conectores
+del KPS, lo hemos limpiado y ha vuelto. 20 min de parada."
+
+     |
+     v  (Agente IA extrae campos estructurados)
+
+{
+    "robot_type": "8XY 170R3",
+    "error_code": "KCP_BLACK",
+    "category": "pantalla",
+    "title": "KCP en negro - Green Goo en conectores KPS",
+    "description": "...",
+    "solution": "Limpieza de conectores KPS",
+    "downtime_min": 20,
+    "status": "cerrada",
+    "result": "resuelto"
+}
+
+     |
+     v  (POST /api/incidents automatico)
+
+Incidencia creada en KukaLog sin intervencion manual
+\end{lstlisting}
+
+\subsection{Analytics avanzado}
+
+Con datos acumulados, se podrían generar:
+\begin{itemize}[noitemsep]
+    \item \textbf{Predicción de fallos} --- Robots con patrón de incidencias creciente
+    \item \textbf{Alertas proactivas} --- ``El robot 6Y 50R4 ha tenido 3 incidencias de Green Goo en 2 meses, programar cambio de armario''
+    \item \textbf{Análisis de causa raíz} --- Correlación entre categorías, líneas y turnos
+    \item \textbf{KPIs de mantenimiento} --- MTTR, MTBF por robot/línea
+    \item \textbf{Comparativa entre líneas} --- Qué líneas concentran más fallos y por qué
+\end{itemize}
+
+\section{Fase 4: Multi-planta}
+
+\begin{itemize}[noitemsep]
+    \item Filtro por planta (Valencia, Saarlouis, Cologne...)
+    \item Compartir knowledge base entre plantas
+    \item Un fallo resuelto en Valencia aparece como sugerencia en Saarlouis
+    \item Dashboard corporativo global
+\end{itemize}
+
+\newpage
+
+% ============================================================
+% TEAM
+% ============================================================
+
+\section{Equipo y Créditos}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Rol} & \textbf{Persona} \\
+\midrule
+Desarrollador & Miguel Serra Ferrando \\
+Tutor & Javi Llopis \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Dato} & \textbf{Valor} \\
+\midrule
+Organización & Ford Motor Company \\
+Departamento & Body Construction \\
+Planta & Valencia (Almussafes) \\
+Fecha inicio & Mayo 2026 \\
+Estado & MVP completado \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+
+\begin{center}
+\textbf{Licencia:} Documento interno Ford Motor Company --- Uso restringido.
+\end{center}
+
+\end{document}

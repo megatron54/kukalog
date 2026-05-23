@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: ./backend
+    container_name: kukalog-api
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8002
+    container_name: kukalog-web
+    ports:
+      - "3080:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped

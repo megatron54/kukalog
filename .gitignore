@@ -1,0 +1,28 @@
+# Real plant data (confidential)
+backend/seed.py
+backend/kukalog.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+frontend/.next/
+frontend/.git/
+
+# LaTeX aux files
+docs/*.aux
+docs/*.log
+docs/*.toc
+docs/*.out
+docs/*.synctex.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+*.env.local
