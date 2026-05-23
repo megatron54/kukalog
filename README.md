@@ -1,16 +1,30 @@
-# KukaLog - Gestión de Incidencias KUKA
+# KukaLog - Gestión de Incidencias KUKA KRC2
 
-Plataforma web interna para registrar, documentar y consultar incidencias técnicas de robots KUKA en planta de automoción.
+Plataforma web interna para registrar, documentar y consultar incidencias técnicas de robots KUKA KRC2 en planta de automoción.
 
-## Ejecutar el proyecto
+## Inicio rápido (Docker)
 
-### Backend (puerto 8001)
+```bash
+git clone https://github.com/megatron54/kukalog.git
+cd kukalog
+docker compose up --build
+```
+
+- **Frontend**: http://localhost:3080
+- **API**: http://localhost:8002
+- **API docs**: http://localhost:8002/docs
+
+La base de datos se genera automáticamente con datos de ejemplo al construir el contenedor.
+
+## Ejecución manual (desarrollo)
+
+### Backend (puerto 8002)
 
 ```bash
 cd backend
 pip install -r requirements.txt
-python seed.py          # Genera 50 incidencias mock
-python main.py          # Arranca en http://localhost:8001
+python seed_public.py       # Genera incidencias de ejemplo
+python main.py              # Arranca en http://localhost:8002
 ```
 
 ### Frontend (puerto 3000)
@@ -18,16 +32,14 @@ python main.py          # Arranca en http://localhost:8001
 ```bash
 cd frontend
 npm install
-npm run dev             # Arranca en http://localhost:3000
+npm run dev                 # Arranca en http://localhost:3000
 ```
-
-Abre http://localhost:3000 en el navegador.
 
 ## Stack
 
 - **Backend**: Python 3.12 + FastAPI + SQLite + SQLAlchemy
 - **Frontend**: Next.js 16 + React + TypeScript + TailwindCSS + Recharts
-- **Datos**: 50 incidencias mock realistas (robots KUKA, errores reales, soluciones técnicas)
+- **Contenedores**: Docker Compose (2 servicios)
 
 ## Funcionalidades
 
