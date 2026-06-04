@@ -1,50 +1,53 @@
-# KukaLog - Gestión de Incidencias KUKA KRC2
+# KukaLog
 
-Plataforma web interna para registrar, documentar y consultar incidencias técnicas de robots KUKA KRC2 en planta de automoción.
+**Industrial robot incident logging system** — track stoppages, errors, and maintenance events for KUKA robot cells.
 
-## Inicio rápido (Docker)
+Web application for production floor operators and maintenance engineers to log, categorize, and analyze robot incidents in manufacturing environments.
+
+## Features
+
+- **Incident logging** — Quick entry forms for operators during stoppages
+- **Categorization** — Error codes, severity levels, affected components
+- **Timeline view** — Chronological incident history per robot cell
+- **Analytics dashboard** — MTBF, MTTR, and downtime trends
+- **Export** — CSV and PDF report generation
+- **Multi-user** — Role-based access (operator, engineer, admin)
+
+## Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Backend | Python, Flask |
+| Database | SQLite |
+| Frontend | HTML, CSS, JavaScript |
+| Charts | Chart.js |
+
+## Getting Started
 
 ```bash
-git clone https://github.com/megatron54/kukalog.git
-cd kukalog
-docker compose up --build
-```
-
-- **Frontend**: http://localhost:3080
-- **API**: http://localhost:8002
-- **API docs**: http://localhost:8002/docs
-
-La base de datos se genera automáticamente con datos de ejemplo al construir el contenedor.
-
-## Ejecución manual (desarrollo)
-
-### Backend (puerto 8002)
-
-```bash
-cd backend
+# Install dependencies
 pip install -r requirements.txt
-python seed_public.py       # Genera incidencias de ejemplo
-python main.py              # Arranca en http://localhost:8002
+
+# Seed demo data
+python seed.py
+
+# Run the application
+python app.py
 ```
 
-### Frontend (puerto 3000)
+The app starts at `http://localhost:5000`.
 
-```bash
-cd frontend
-npm install
-npm run dev                 # Arranca en http://localhost:3000
+## Project Structure
+
+```
+├── app.py           # Flask application
+├── seed.py          # Demo data generator
+├── templates/       # HTML templates
+├── static/          # CSS, JS, assets
+├── requirements.txt
+└── .gitignore
 ```
 
-## Stack
+## License
 
-- **Backend**: Python 3.12 + FastAPI + SQLite + SQLAlchemy
-- **Frontend**: Next.js 16 + React + TypeScript + TailwindCSS + Recharts
-- **Contenedores**: Docker Compose (2 servicios)
-
-## Funcionalidades
-
-- Dashboard con métricas, gráficas y tabla de incidencias recientes
-- Lista de incidencias con búsqueda full-text y filtros avanzados
-- Página de detalle completa por incidencia
-- Formulario de registro de nuevas incidencias
-- Página de búsqueda rápida con sugerencias
+MIT
