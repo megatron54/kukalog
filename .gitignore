@@ -1,6 +1,6 @@
-# Real plant data (confidential)
-backend/seed.py
+# Database files
 backend/kukalog.db
+*.db
 
 # Python
 __pycache__/
